@@ -10,6 +10,8 @@ use uniforms::SamplerBehavior;
 
 use buffer::BufferAnySlice;
 
+use cgmath;
+
 /// Type of a uniform in a program.
 #[allow(missing_docs)]
 #[derive(Copy, Clone, Debug, PartialEq, Eq)]
@@ -975,5 +977,28 @@ impl<'a> AsUniformValue for (&'a str, ShaderStage) {
     #[inline]
     fn as_uniform_value(&self) -> UniformValue {
         UniformValue::Subroutine(self.1, self.0)
+    }
+}
+
+
+// Custom
+impl AsUniformValue for cgmath::Matrix4<f32> {
+    fn as_uniform_value(&self) -> UniformValue {
+        let array: &[[f32; 4]; 4] = self.as_ref();
+        array.as_uniform_value() 
+    }
+}
+
+impl AsUniformValue for cgmath::Matrix3<f32> {
+    fn as_uniform_value(&self) -> UniformValue {
+        let array: &[[f32; 3]; 3] = self.as_ref();
+        array.as_uniform_value() 
+    }
+}
+
+impl AsUniformValue for cgmath::Matrix2<f32> {
+    fn as_uniform_value(&self) -> UniformValue {
+        let array: &[[f32; 2]; 2] = self.as_ref();
+        array.as_uniform_value() 
     }
 }
