@@ -317,6 +317,7 @@ fn build_texture<W: Write>(mut dest: &mut W, ty: TextureType, dimensions: Textur
             use texture::{{Texture3dDataSource, Texture2dDataSink, MipmapsOption, CompressedMipmapsOption}};
             use texture::{{RawImage1d, RawImage2d, RawImage3d, CubeLayer}};
             use texture::pixel::PixelValue;
+            use texture::Texture;
 
             use image_format::{{ClientFormatAny, TextureFormatRequest}};
             use image_format::{{UncompressedFloatFormat, UncompressedIntFormat}};
@@ -324,7 +325,7 @@ fn build_texture<W: Write>(mut dest: &mut W, ty: TextureType, dimensions: Textur
             use image_format::{{CompressedSrgbFormat, SrgbFormat, UncompressedUintFormat}};
 
             use backend::Facade;
-            use uniforms::{{UniformValue, AsUniformValue, Sampler}};
+            use uniforms::{{UniformValue, AsUniformValue, Sampler, SamplerBehavior}};
             use framebuffer;
             use Rect;
 
@@ -419,10 +420,25 @@ fn build_texture<W: Write>(mut dest: &mut W, ty: TextureType, dimensions: Textur
             TextureType::Srgb | TextureType::CompressedSrgb |
             TextureType::Integral | TextureType::Unsigned | TextureType::Depth => {
                 (writeln!(dest, "
+                            impl AsUniformValue for {myname} {{
+                                #[inline]
+                                fn as_uniform_value(&self) -> UniformValue {{
+                                    UniformValue::{myname}(self, None)
+                                }}
+                            }}
+
+
                             impl<'a> AsUniformValue for &'a {myname} {{
                                 #[inline]
                                 fn as_uniform_value(&self) -> UniformValue {{
                                     UniformValue::{myname}(*self, None)
+                                }}
+                            }}
+
+                            impl Texture for {myname} {{
+                                #[inline]
+                                fn with_sampler(&self, sampler: Option<SamplerBehavior>) -> UniformValue {{
+                                    UniformValue::{myname}(self, sampler)
                                 }}
                             }}
 
