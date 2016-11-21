@@ -117,6 +117,7 @@ use std::fmt;
 use std::error::Error;
 
 use image_format::FormatNotSupportedError;
+use uniforms::{SamplerBehavior, UniformValue};
 
 pub use image_format::{ClientFormat, TextureFormat};
 pub use image_format::{UncompressedFloatFormat, UncompressedIntFormat, UncompressedUintFormat};
@@ -756,4 +757,9 @@ impl From<FormatNotSupportedError> for TextureCreationError {
     fn from(_: FormatNotSupportedError) -> TextureCreationError {
         TextureCreationError::FormatNotSupported
     }
+}
+
+
+pub trait Texture {
+    fn with_sampler(&self, Option<SamplerBehavior>) -> UniformValue;
 }
