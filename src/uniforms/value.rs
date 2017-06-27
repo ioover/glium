@@ -140,7 +140,7 @@ pub enum UniformType {
 #[derive(Copy)]
 pub enum UniformValue<'a> {
     /// Contains a handle to the buffer, and a function that indicates whether this buffer
-    /// can be binded on a block with the given layout.
+    /// can be bound on a block with the given layout.
     /// The last parameter is a sender which must be used to send a `SyncFence` that expires when
     /// the buffer has finished being used.
     Block(BufferAnySlice<'a>, fn(&program::UniformBlock) -> Result<(), LayoutMismatchError>),
@@ -288,6 +288,7 @@ impl<'a> UniformValue<'a> {
             (&UniformValue::IntegralTexture1d(_, _), UniformType::ISampler1d) => true,
             (&UniformValue::UnsignedTexture1d(_, _), UniformType::USampler1d) => true,
             (&UniformValue::DepthTexture1d(_, _), UniformType::Sampler1d) => true,
+            (&UniformValue::DepthTexture1d(_, _), UniformType::Sampler1dShadow) => true,
             (&UniformValue::Texture2d(_, _), UniformType::Sampler2d) => true,
             (&UniformValue::CompressedTexture2d(_, _), UniformType::Sampler2d) => true,
             (&UniformValue::SrgbTexture2d(_, _), UniformType::Sampler2d) => true,
@@ -295,6 +296,7 @@ impl<'a> UniformValue<'a> {
             (&UniformValue::IntegralTexture2d(_, _), UniformType::ISampler2d) => true,
             (&UniformValue::UnsignedTexture2d(_, _), UniformType::USampler2d) => true,
             (&UniformValue::DepthTexture2d(_, _), UniformType::Sampler2d) => true,
+            (&UniformValue::DepthTexture2d(_, _), UniformType::Sampler2dShadow) => true,
             (&UniformValue::Texture3d(_, _), UniformType::Sampler3d) => true,
             (&UniformValue::CompressedTexture3d(_, _), UniformType::Sampler3d) => true,
             (&UniformValue::SrgbTexture3d(_, _), UniformType::Sampler3d) => true,
@@ -309,6 +311,7 @@ impl<'a> UniformValue<'a> {
             (&UniformValue::IntegralTexture1dArray(_, _), UniformType::ISampler1dArray) => true,
             (&UniformValue::UnsignedTexture1dArray(_, _), UniformType::USampler1dArray) => true,
             (&UniformValue::DepthTexture1dArray(_, _), UniformType::Sampler1dArray) => true,
+            (&UniformValue::DepthTexture1dArray(_, _), UniformType::Sampler1dArrayShadow) => true,
             (&UniformValue::Texture2dArray(_, _), UniformType::Sampler2dArray) => true,
             (&UniformValue::CompressedTexture2dArray(_, _), UniformType::Sampler2dArray) => true,
             (&UniformValue::SrgbTexture2dArray(_, _), UniformType::Sampler2dArray) => true,
@@ -316,6 +319,7 @@ impl<'a> UniformValue<'a> {
             (&UniformValue::IntegralTexture2dArray(_, _), UniformType::ISampler2dArray) => true,
             (&UniformValue::UnsignedTexture2dArray(_, _), UniformType::USampler2dArray) => true,
             (&UniformValue::DepthTexture2dArray(_, _), UniformType::Sampler2dArray) => true,
+            (&UniformValue::DepthTexture2dArray(_, _), UniformType::Sampler2dArrayShadow) => true,
             (&UniformValue::Cubemap(_, _), UniformType::SamplerCube) => true,
             (&UniformValue::CompressedCubemap(_, _), UniformType::SamplerCube) => true,
             (&UniformValue::SrgbCubemap(_, _), UniformType::SamplerCube) => true,
@@ -323,6 +327,7 @@ impl<'a> UniformValue<'a> {
             (&UniformValue::IntegralCubemap(_, _), UniformType::ISamplerCube) => true,
             (&UniformValue::UnsignedCubemap(_, _), UniformType::USamplerCube) => true,
             (&UniformValue::DepthCubemap(_, _), UniformType::SamplerCube) => true,
+            (&UniformValue::DepthCubemap(_, _), UniformType::SamplerCubeShadow) => true,
             (&UniformValue::CubemapArray(_, _), UniformType::SamplerCubeArray) => true,
             (&UniformValue::CompressedCubemapArray(_, _), UniformType::SamplerCubeArray) => true,
             (&UniformValue::SrgbCubemapArray(_, _), UniformType::SamplerCubeArray) => true,
@@ -330,6 +335,7 @@ impl<'a> UniformValue<'a> {
             (&UniformValue::IntegralCubemapArray(_, _), UniformType::ISamplerCubeArray) => true,
             (&UniformValue::UnsignedCubemapArray(_, _), UniformType::USamplerCubeArray) => true,
             (&UniformValue::DepthCubemapArray(_, _), UniformType::SamplerCubeArray) => true,
+            (&UniformValue::DepthCubemapArray(_, _), UniformType::SamplerCubeArrayShadow) => true,
             (&UniformValue::BufferTexture(tex), UniformType::SamplerBuffer) => {
                 tex.get_texture_type() == texture::buffer_texture::BufferTextureType::Float
             },

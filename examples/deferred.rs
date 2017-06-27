@@ -5,14 +5,13 @@ extern crate image;
 
 use glium::glutin;
 use glium::index::PrimitiveType;
-use glium::Surface;
+use glium::{DisplayBuild, Surface};
 use std::io::Cursor;
 
 mod support;
 
 fn main() {
     use cgmath::SquareMatrix;
-    use glium::DisplayBuild;
 
     // building the display, ie. the main object
     let display = glutin::WindowBuilder::new()
@@ -171,6 +170,7 @@ fn main() {
                         (light_attenuation.z * light_distance * light_distance)
                     );
                     attenuation_factor *= (1.0 - pow((light_distance / light_radius), 2.0));
+		    attenuation_factor = max(attenuation_factor, 0.0);
                     diffuse *= attenuation_factor;
 
                 }
